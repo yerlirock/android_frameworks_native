@@ -174,9 +174,15 @@ bool DisplayUtils::canAllocateHwcDisplayIdForVDS(int usage) {
     // on AOSP builds with QTI_BSP disabled, we should allocate hwc display id for virtual display
     int flag_mask = 0xffffffff;
 
-#if QTI_BSP
+#ifdef QTI_BSP
+#ifdef FORCE_HWC_COPY_FOR_VIRTUAL_DISPLAYS
     // Reserve hardware acceleration for WFD use-case
     flag_mask = GRALLOC_USAGE_PRIVATE_WFD;
+#else
+    // Don't allocate HWC display unless we force HWC copy, otherwise
+    // incompatible buffers are sent to the media stack
+    flag_mask = 0;
+#endif
 #endif
 
     return (usage & flag_mask);
