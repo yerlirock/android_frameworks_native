@@ -467,7 +467,11 @@ void Layer::setGeometry(
 
     // this gives us only the "orientation" component of the transform
     const State& s(getDrawingState());
+#if defined(QCOM_BSP) && !defined(QCOM_BSP_LEGACY)
+    if (!isOpaque(s)) {
+#else
     if (!isOpaque(s) || s.alpha != 0xFF) {
+#endif
         layer.setBlending(mPremultipliedAlpha ?
                 HWC_BLENDING_PREMULT :
                 HWC_BLENDING_COVERAGE);
